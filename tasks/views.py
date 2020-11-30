@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
+from rest_framework.parsers import JSONParser
+
 from tasks.serializer import TaskSerializer
 from tasks.models import Task
 
@@ -15,3 +17,13 @@ def get_tasks(request):
     if request.method == 'GET':
         serializer = TaskSerializer(Task.objects.all(), many=True)
         return JsonResponse(serializer.data, safe=False)
+
+def post_task(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = TaskSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
