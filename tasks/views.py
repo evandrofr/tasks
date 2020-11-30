@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 
 from tasks.serializer import TaskSerializer
@@ -13,11 +14,13 @@ from tasks.models import Task
 def index(request):
     return HttpResponse("Hello, world. You're at the tasks index.")
 
+@api_view(["GET"])
 def get_tasks(request):
     if request.method == 'GET':
         serializer = TaskSerializer(Task.objects.all(), many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@api_view(["POST"])
 def post_task(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
