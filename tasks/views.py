@@ -18,7 +18,7 @@ def index(request):
 def get_tasks(request):
     if request.method == 'GET':
         serializer = TaskSerializer(Task.objects.all(), many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(serializer.data, status=200, safe=False)
 
 @api_view(["POST"])
 def post_task(request):
@@ -28,11 +28,11 @@ def post_task(request):
 
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
 
 @api_view(["DELETE"])
 def delete_tasks(request):
     if request.method == 'DELETE':
         task = Task.objects.all().delete()
-        return HttpResponse("Tasks deleted")
+        return JsonResponse({"status": 200, "message": "Tasks deleted"}, status=200)
