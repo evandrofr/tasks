@@ -30,3 +30,9 @@ def post_task(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+@api_view(["DELETE"])
+def delete_tasks(request):
+    if request.method == 'DELETE':
+        task = Task.objects.all().delete()
+        return HttpResponse("Tasks deleted")
